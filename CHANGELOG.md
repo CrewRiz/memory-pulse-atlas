@@ -16,5 +16,6 @@ The first release.
 - `--mood-cmd`: optional gauges for an agent harness that reports neuromodulator levels.
 - A correction may give one withdrawn or replacement value as a string; it is read as a one-item list.
 - Every skipped ledger line is reported with its line number and the reason.
+- The 3-D view is built with three.js 0.187.0.
 
 [0.1.0]: https://github.com/CrewRiz/memory-pulse-atlas/releases/tag/v0.1.0

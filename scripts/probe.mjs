@@ -9,6 +9,9 @@ import { spawn, spawnSync } from "node:child_process";
 
 const args = process.argv.slice(2), si = args.indexOf("--shots"), shots = si >= 0 ? args[si + 1] : null;
 if (shots) mkdirSync(shots, { recursive: true });
+// PROBE_DPR: the device pixel ratio (phones and laptop screens run at 2 or 3; three r187 changed how the renderer
+// scales its viewport by it when post-processing renders into a target)
+const DPR = Number(process.env.PROBE_DPR ?? 1);
 const from = process.env.PLAYWRIGHT_FROM ?? new URL("../", import.meta.url).pathname;
 let chromium;
 try { ({ chromium } = createRequire(`${from.replace(/\/?$/, "/")}node_modules/`)("playwright-core")); } catch { console.error("playwright-core not found; set PLAYWRIGHT_FROM"); process.exit(1); }
@@ -38,7 +41,7 @@ const drawnShare = (page, png) => page.evaluate(async (b64) => {
 const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--use-angle=metal", "--ignore-gpu-blocklist", ...(process.platform === "linux" ? ["--enable-unsafe-swiftshader"] : [])] }); // a CI runner has no GPU: WebGL falls back to software only when allowed
 let bad = 0;
 for (const [name, url] of [["full", "file://" + join(dir, "full.html")], ["widget", "file://" + join(dir, "embed.html")], ["mood", "file://" + join(dir, "mood.html")], ["live", liveUrl]]) for (const [w, h] of [[1280, 800], [390, 844]]) {
-  const page = await browser.newPage({ viewport: { width: w, height: h } }), errors = [];
+  const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: DPR }), errors = [];
   page.on("pageerror", (e) => errors.push(String(e).slice(0, 160)));
   // record text drawn on the 2-D map that runs past the canvas edge (a label cut off mid-word at phone width)
   await page.addInitScript(() => {

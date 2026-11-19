@@ -82,3 +82,13 @@ test("repo: security policy and contribution guide exist", () => {
   assert.match(read("SECURITY.md"), /private vulnerability report/i);
   assert.ok(existsSync(join(root, "CONTRIBUTING.md")));
 });
+
+test("release: the generated bundles are built from the current source and the installed three.js", () => {
+  const r = spawnSync(process.execPath, ["scripts/build.mjs", "--check"], { cwd: root, encoding: "utf8" });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+});
+
+test("release: the third-party notice names the three.js version the bundle was built with", async () => {
+  const { VIEWER3D } = await import("../src/viewer/viewer3d.bundle.js");
+  assert.match(read("THIRD_PARTY_NOTICES.md"), new RegExp(`bundles three\\.js ${VIEWER3D.three.replace(/\./g, "\\.")} `));
+});

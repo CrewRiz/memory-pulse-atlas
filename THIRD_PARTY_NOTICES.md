@@ -1,6 +1,6 @@
 # Third-party notices
 
-`src/viewer/viewer3d.bundle.js` bundles three.js 0.186.1 (https://threejs.org), under this licence:
+`src/viewer/viewer3d.bundle.js` bundles three.js 0.187.0 (https://threejs.org), under this licence:
 
 ```
 The MIT License

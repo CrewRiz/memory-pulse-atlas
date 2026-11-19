@@ -51,6 +51,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run probe
+      - name: probe at device pixel ratio 2 (phones and laptop screens)
+        run: npm run probe
+        env:
+          PROBE_DPR: "2"
 
   package:
     name: package (install the tarball in an empty project and build a page)
