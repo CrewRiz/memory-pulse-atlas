@@ -35,7 +35,7 @@ const drawnShare = (page, png) => page.evaluate(async (b64) => {
   return 1 - Math.max(...seen.values()) / (d.length / 16);
 }, png.toString("base64"));
 
-const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--use-angle=metal", "--ignore-gpu-blocklist"] });
+const browser = await chromium.launch({ channel: "chrome", headless: true, args: ["--use-angle=metal", "--ignore-gpu-blocklist", ...(process.platform === "linux" ? ["--enable-unsafe-swiftshader"] : [])] }); // a CI runner has no GPU: WebGL falls back to software only when allowed
 let bad = 0;
 for (const [name, url] of [["full", "file://" + join(dir, "full.html")], ["widget", "file://" + join(dir, "embed.html")], ["mood", "file://" + join(dir, "mood.html")], ["live", liveUrl]]) for (const [w, h] of [[1280, 800], [390, 844]]) {
   const page = await browser.newPage({ viewport: { width: w, height: h } }), errors = [];

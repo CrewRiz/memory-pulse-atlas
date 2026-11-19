@@ -28,26 +28,34 @@
     "THIRD_PARTY_NOTICES.md"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "test": "node --test test/*.test.js",
     "build": "node scripts/build.mjs",
-    "probe": "node scripts/probe.mjs"
+    "probe": "node scripts/probe.mjs",
+    "release:public": "node scripts/release-public.mjs"
   },
   "keywords": [
+    "agent-memory",
     "ai-agent",
-    "memory",
-    "visualization",
-    "three.js",
-    "mcp",
     "claude-code",
-    "knowledge-graph"
+    "knowledge-graph",
+    "mcp",
+    "memory",
+    "offline",
+    "three.js",
+    "visualisation",
+    "visualization"
   ],
   "devDependencies": {
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "globals": "^17.14.0",
-    "three": "^0.186.1"
+    "three": "^0.186.1",
+    "playwright-core": "1.65.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

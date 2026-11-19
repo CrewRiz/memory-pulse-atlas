@@ -3,7 +3,7 @@
 See your coding agent's memory as a brain you can turn in your hand: every note it kept, the links between them, and
 every correction drawn in red over the notes it retired.
 
-![The atlas widget: a translucent brain holding 302 fictional memories in coloured regions, with four harness gauges](docs/atlas.png)
+![The atlas widget: a translucent brain holding 302 fictional memories in coloured regions, with four harness gauges](https://raw.githubusercontent.com/CrewRiz/memory-pulse-atlas/main/docs/atlas.png)
 
 ```bash
 npx memory-pulse-atlas
@@ -27,7 +27,7 @@ request at all.
 
 ## Install
 
-You need Node 20 or later. There is nothing else to install and the package has no runtime dependencies.
+You need Node 22 or later. There is nothing else to install and the package has no runtime dependencies.
 
 ```bash
 npx memory-pulse-atlas                                  # the project's ledger -> memory-atlas.html
@@ -38,8 +38,8 @@ npx memory-pulse-atlas serve                            # a live page on 127.0.0
 
 With no file named, it reads `./.memory-pulse/events.jsonl`, then `$MEMORY_PULSE_LEDGER`. A ledger is JSON Lines, one
 row per line, each with a whole-number `t`, a `cause` and an `effect`. `note`, `tags`, `kind: "correction"`,
-`withdrawn` and `replacement` are read when present. A line without the three required fields is skipped, and the
-file and line numbers are printed. `--strict` refuses the build instead. Lines are never dropped in silence.
+`withdrawn` and `replacement` (a list, or one value as a string) are read when present. A line without the three
+required fields is skipped, and the file, the line number and the reason are printed. `--strict` refuses the build instead. Lines are never dropped in silence.
 
 `serve` listens on 127.0.0.1 only. It refuses requests that arrive under any other host name and refuses to be shown
 inside another site's frame.

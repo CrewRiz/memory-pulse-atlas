@@ -98,3 +98,35 @@ test("serve: local only, refuses other hosts and framing, and a row appended to 
     assert.deepEqual(moved.map((n) => n.id), [], "earlier memories moved when the ledger grew");
   } finally { p.kill(); }
 });
+
+test("cli: a correction written by hand with one withdrawn value as a string is read as a one-item list, not skipped", () => {
+  const f = join(dir, "hand.jsonl");
+  writeFileSync(f, [
+    { t: 1, cause: "refund window", effect: "30 days" },
+    { t: 2, cause: "refund window", effect: "14 days", kind: "correction", withdrawn: "30 days", replacement: "14 days" },
+    { t: 3, cause: "support hours", effect: "9 to 5, refund window 30 days" },
+  ].map((r) => JSON.stringify(r)).join("\n") + "\n");
+  const r = run([f, "--out", join(dir, "hand.html"), "--strict"]);
+  assert.equal(r.status, 0, r.stderr);
+  assert.doesNotMatch(r.stderr, /skipped/);
+  assert.match(r.stdout, /3 memories, 1 topics, 1 corrections, 2 rows still carrying a withdrawn value/); // row 1 before the correction, row 3 after it
+});
+
+test("cli: a skipped line says why", () => {
+  const f = join(dir, "why.jsonl");
+  writeFileSync(f, row(1, "x") + "\n" + JSON.stringify({ t: 2, cause: "c", effect: "e", tags: "one" }) + "\n" + JSON.stringify({ t: 3.5, cause: "c", effect: "e" }) + "\n");
+  const r = run([f, "--out", join(dir, "why.html")]);
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(r.stderr, /line 2: tags must be a list of strings/);
+  const s = run([f, "--out", join(dir, "why2.html"), "--strict"]);
+  assert.match(s.stderr, /line 2: tags must be a list of strings/);
+});
+
+test("cli: --version prints the package version and builds nothing", () => {
+  const { version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+  for (const f of ["--version", "-v"]) {
+    const r = run([f], { cwd: dir });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(r.stdout.trim(), version);
+  }
+});

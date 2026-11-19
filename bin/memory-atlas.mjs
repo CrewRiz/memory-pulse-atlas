@@ -17,13 +17,15 @@ const HELP = `memory-atlas: see an agent's memory as a 3-D brain, in one offline
   --mood-cmd "CMD"     a cognitive harness's levels, from any command that prints
                        {"DA":..,"ACh":..,"NE":..,"5HT":..} (or {"modulator":{...}}), e.g. --mood-cmd "rain state"
   --max-notes N        refuse more than N memories (default 5000)
-  --open               open the page when it is written (macOS, Linux)`;
+  --open               open the page when it is written (macOS, Linux)
+  --version            print the version`;
 
 const argv = process.argv.slice(2);
 const flag = (k, d = null) => { const i = argv.indexOf("--" + k); if (i < 0) return d; const v = argv[i + 1]; argv.splice(i, 2); return v; };
 const has = (k) => { const i = argv.indexOf("--" + k); if (i < 0) return false; argv.splice(i, 1); return true; };
 const fail = (m) => { process.stderr.write("memory-atlas: " + m + "\n"); process.exit(1); };
 if (has("help") || has("h")) { console.log(HELP); process.exit(0); }
+if (argv.includes("--version") || argv.includes("-v")) { console.log(JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")).version); process.exit(0); }
 const serve = argv[0] === "serve" ? argv.shift() : null;
 const out = resolve(flag("out", "memory-atlas.html")), title = flag("title"), port = Number(flag("port", "4747"));
 const moodCmd = flag("mood-cmd"), maxNotes = Number(flag("max-notes", "5000")), embed = has("embed"), open = has("open"), strict = has("strict");
@@ -52,6 +54,7 @@ function build(previous = null) {
   const ledgers = files.map((f) => {
     const rows = parseLedger(readFileSync(f, "utf8"), basename(f), { strict });
     if (rows.skipped.length) process.stderr.write(`memory-atlas: ${basename(f)}: skipped ${rows.skipped.length} lines that are not ledger rows: ${rows.skipped.slice(0, 20).join(", ")}${rows.skipped.length > 20 ? ", ..." : ""} (--strict refuses instead)\n`);
+    if (rows.skipped.length) for (const n of rows.skipped.slice(0, 5)) process.stderr.write(`  line ${n}: ${rows.reasons.get(n)}\n`);
     return { name: basename(f), rows };
   });
   return atlasFromLedgers(ledgers, { title: title ?? (files.length === 1 ? basename(resolve(files[0], "../..")) : "Memory"), maxNotes, previous });
