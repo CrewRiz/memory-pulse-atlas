@@ -1,0 +1,53 @@
+{
+  "name": "memory-pulse-atlas",
+  "version": "0.1.0",
+  "description": "See an AI agent's memory as a 3-D brain: every note, link and correction, replayable over time. One offline HTML file from a memory ledger.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrewRiz/memory-pulse-atlas.git"
+  },
+  "homepage": "https://github.com/CrewRiz/memory-pulse-atlas#readme",
+  "bugs": {
+    "url": "https://github.com/CrewRiz/memory-pulse-atlas/issues"
+  },
+  "bin": {
+    "memory-pulse-atlas": "bin/memory-atlas.mjs",
+    "memory-atlas": "bin/memory-atlas.mjs"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./widget": "./src/widget.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "build": "node scripts/build.mjs",
+    "probe": "node scripts/probe.mjs"
+  },
+  "keywords": [
+    "ai-agent",
+    "memory",
+    "visualization",
+    "three.js",
+    "mcp",
+    "claude-code",
+    "knowledge-graph"
+  ],
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "eslint": "^9.39.5",
+    "globals": "^17.14.0",
+    "three": "^0.186.1"
+  }
+}
